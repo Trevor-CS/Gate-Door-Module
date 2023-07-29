@@ -9,7 +9,7 @@ local Debris        = game:GetService("Debris")
 
 local Gate = {}
 Gate.__index = Gate
-
+    
 function Gate:New(Gates, TouchObjects, AccessObject, Speed, Interval, Direction, Offset, GateSound, AccessSound, StayOpenClosed, Tween)
 	assert(type(Gates)=="table", "Gate objects must be passed as a table")
 	assert(type(TouchObjects)=="table", "Touch objects must be passed as a table")
@@ -23,16 +23,16 @@ function Gate:New(Gates, TouchObjects, AccessObject, Speed, Interval, Direction,
 	newGate.AccessSound = ((AccessSound) and AccessSound:IsA("Sound")) and AccessSound or nil
 	newGate.GateSound 	= ((GateSound) and GateSound:IsA("Sound")) and GateSound or nil
 	newGate.Stay		= type(StayOpenClosed)=="boolean" and StayOpenClosed or false
-	newGate.TweenInfo 	= typeof(Tween)=="TweenInfo" and (Tween) or TweenInfo.new(Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
+	newGate.TweenInfo 	= typeof(Tween)=="TweenInfo" and (Tween) or TweenInfo.new(newGate.Speed, Enum.EasingStyle.Linear, Enum.EasingDirection.InOut)
 	newGate.Speed 		= newGate.TweenInfo.Time
 	
 	newGate.OriginalCF	= {}
 	newGate.Active 		= false
-	newGate.Touched = false
+	newGate.Touched 	= false
 	
-	table.foreach(Gates, function(_,v)
+	for _,v in pairs(Gates) do
 		newGate.OriginalCF[v] = v:GetPivot()
-	end)
+	end
 	
 	if typeof(Direction) == "Vector3" then
 		newGate.Direction = Direction
@@ -54,7 +54,7 @@ function Gate:New(Gates, TouchObjects, AccessObject, Speed, Interval, Direction,
 		end
 	end
 	
-	table.foreach(TouchObjects, function(_,v)
+	for _,v in pairs(TouchObjects) do
 		local ProxPrompt = v:FindFirstChildWhichIsA("ProximityPrompt")
 		if ProxPrompt then
 			ProxPrompt.PromptButtonHoldBegan:Connect(function(plr)
@@ -91,8 +91,8 @@ function Gate:New(Gates, TouchObjects, AccessObject, Speed, Interval, Direction,
 				newGate.Touched = false
 			end)
 		end
-	end)
-	return newGate
+	end
+	--return newGate
 end
 
 function TweenModel(Sound, TInfo, info)
@@ -164,7 +164,7 @@ function PrepareTweenObjects(ObjectTable, CF, Direction, Offset)
 	local GatesAndCF = {}
 	local InternalCounter = 1
 	if Direction then
-		table.foreach(ObjectTable, function(_,v)
+		for _,v in pairs(ObjectTable) do
 			table.insert(GatesAndCF,
 				{
 					v,
@@ -176,16 +176,16 @@ function PrepareTweenObjects(ObjectTable, CF, Direction, Offset)
 				Direction *= -1
 			end
 			InternalCounter += 1
-		end)
+		end
 	else
-		table.foreach(ObjectTable, function(_,v)
+		for _,v in pairs(ObjectTable) do
 			table.insert(GatesAndCF,
 				{
 					v,
 					CF[v]
 				}
 			)
-		end)
+		end
 	end
 	return GatesAndCF
 end
